@@ -1,5 +1,6 @@
 package org.danceden.bookings.controller;
 
+import org.danceden.bookings.exception.OfferingNotFoundException;
 import org.danceden.bookings.model.Offering;
 import org.danceden.bookings.model.OfferingStatus;
 import org.danceden.bookings.model.OfferingType;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,5 +47,11 @@ public class OfferingController {
                 : pageable;
 
         return offeringRepository.findAll(spec, boundedPageable);
+    }
+
+    @GetMapping("/api/offerings/{id}")
+    public Offering getOffering(@PathVariable Long id) {
+        return offeringRepository.findById(id)
+                .orElseThrow(() -> new OfferingNotFoundException(id));
     }
 }
